@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Pillu 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<style>
+:root {
+    --primary: #ff758c;
+    --accent: #ff4d6d;
+    --glass: rgba(255, 255, 255, 0.85);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #ffafbd, #ffc3a0, #ff9a9e, #fad0c4);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradientBG { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.screen.active { display: flex; }
+
+.card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes popIn { from{opacity:0; transform:scale(0.8);} to{opacity:1; transform:scale(1);} }
+
+.title { font-family: 'Dancing Script', cursive; font-size: 35px; color: var(--accent); margin-bottom: 15px; }
+
+/* The Poem Scrollbox */
+.poem-box {
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #444;
+    padding: 10px;
+    white-space: pre-line; /* Keeps line breaks */
+}
+
+/* Bunny Animation Page */
+.bunny-container { font-size: 50px; position: relative; height: 120px; }
+.bunny-left { position: absolute; left: 20%; animation: bounce 2s infinite; }
+.bunny-right { position: absolute; right: 20%; animation: bounce 2s infinite 0.5s; }
+
+@keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
+
+.emitter { position: absolute; font-size: 20px; animation: emit 3s linear infinite; opacity: 0; }
+@keyframes emit { 
+    0% { transform: translate(0,0) scale(0); opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) scale(1.5); opacity:0; }
+}
+
+/* Curtain Effect */
+#curtain-l, #curtain-r {
+    position: fixed; top: 0; width: 50%; height: 100%;
+    background: #ff4d6d; z-index: 1000; transition: 1.5s ease-in-out;
+    display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;
+}
+#curtain-l { left: 0; border-right: 2px solid #fff; }
+#curtain-r { right: 0; border-left: 2px solid #fff; }
+
+.curtain-open #curtain-l { transform: translateX(-100%); }
+.curtain-open #curtain-r { transform: translateX(100%); }
+
+/* Heart Password Page */
+.big-heart { font-size: 100px; cursor: pointer; animation: heartBeat 1.2s infinite; display: inline-block; }
+@keyframes heartBeat { 0%, 100% {transform: scale(1);} 50% {transform: scale(1.1);} }
+
+input {
+    width: 80%; padding: 12px; border-radius: 20px; border: 2px solid var(--accent);
+    margin: 20px 0; text-align: center; outline: none;
+}
+
+button {
+    background: var(--accent); color: white; border: none; padding: 10px 25px;
+    border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+button:hover { transform: scale(1.1); }
+
+</style>
+</head>
+<body>
+
+<div class="screen active" id="s0">
+    <div class="card">
+        <div class="title">Hello Beautiful ✨</div>
+        <p>Enter your name to start</p>
+        <input type="text" id="pass1" placeholder="Who are you?">
+        <button onclick="checkFirstPass()">Open 💗</button>
+    </div>
+</div>
+
+<div class="screen" id="s1">
+    <div class="card">
+        <div class="title">Just for you...</div>
+        <p id="msg-text">You are the most precious person in my life.</p>
+        <button onclick="nextMessage()">Read More ✨</button>
+    </div>
+</div>
+
+<div class="screen" id="s2">
+    <div class="card">
+        <div class="title">Cutie Bunnies!</div>
+        <div class="bunny-container" id="emitter-box">
+            <div class="bunny-left">🐰</div>
+            <div class="bunny-right">🐰</div>
+        </div>
+        <p>They are sending you all the hearts and flowers in the world!</p>
+        <button onclick="go(3)">Keep Going 💖</button>
+    </div>
+</div>
+
+<div class="screen" id="s3">
+    <div class="card">
+        <div class="title">One Last Secret</div>
+        <div class="big-heart" onclick="showInput()">❤️</div>
+        <div id="pillu-input" style="display:none">
+            <p>Enter the secret nickname:</p>
+            <input type="password" id="pass2" placeholder="Secret code...">
+            <button onclick="checkSecondPass()">Reveal My Heart 💍</button>
+        </div>
+    </div>
+</div>
+
+<div id="curtain-l">Bubu</div>
+<div id="curtain-r">Dubu</div>
+
+<div class="screen" id="s4">
+    <div class="card">
+        <div class="title">To My Pillu ❤️</div>
+        <div style="font-size: 40px;">🐻🐰</div>
+        <div class="poem-box">
+Pillu,
+tum sirf meri girlfriend nahi ho,
+tum wo ehsaas ho
+jo bina chuye bhi dil ko choo jaata hai.
+
+Jab duniya shor machati hai,
+tum meri khamoshi ban jaati ho,
+aur jab main tootne lagta hoon,
+tum meri saans ban ke mujhe sambhaal leti ho.
+
+Tumhari ek muskaan,
+meri hazaar thakaawaton ko hara deti hai.
+Tumhara ek “sab theek ho jaayega”,
+meri har jung jeeta deta hai.
+
+Pata hai, pyaar kya hota hai?
+Pyaar wo hota hai jab
+tum meri kamiyon ko bhi
+apni duaon mein shamil kar leti ho.
+
+Mujhe tumhara haath nahi chahiye sirf,
+mujhe tumhara saath chahiye.
+Wo saath jo har mod pe kahe—
+“Main hoon na, darr mat.”
+
+Pillu,
+tum wo sukoon ho
+jo bheed mein bhi akela mehsoos nahi hone deta.
+Tum wo ghar ho
+jahan laut ke aane ka mann karta hai...
+
+Main wada nahi karta ki
+main perfect hoon,
+par ye wada zaroor karta hoon
+ki tumhare liye real hoon.
+
+Gussa bhi, pyaar bhi,
+fight bhi, par chhod ke kabhi nahi jaaunga.
+Hamesha tumhara... ❤️
+        </div>
+        <button onclick="location.reload()">Restart 🌸</button>
+    </div>
+</div>
+
+<script>
+    const messages = [
+        "Every time I see you, my heart skips a beat.",
+        "You are the best thing that ever happened to me.",
+        "I love the way you laugh and the way you care.",
+        "Palak, you are my sunshine on a rainy day.",
+        "I am so lucky to have you by my side."
+    ];
+    let msgIndex = 0;
+
+    function go(n) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('s' + n).classList.add('active');
+        if(n === 2) startEmitting();
+    }
+
+    function checkFirstPass() {
+        if(document.getElementById('pass1').value.toLowerCase() === 'palak') {
+            confetti();
+            go(1);
+        } else { alert("Only for Palak! 💔"); }
+    }
+
+    function nextMessage() {
+        if(msgIndex < messages.length - 1) {
+            msgIndex++;
+            document.getElementById('msg-text').innerText = messages[msgIndex];
+        } else {
+            go(2);
+        }
+    }
+
+    function startEmitting() {
+        const box = document.getElementById('emitter-box');
+        setInterval(() => {
+            const e = document.createElement('div');
+            e.className = 'emitter';
+            e.innerHTML = ['🌸','💗','✨','🌷'][Math.floor(Math.random()*4)];
+            e.style.left = '50%';
+            e.style.setProperty('--x', (Math.random()*200 - 100) + 'px');
+            e.style.setProperty('--y', (Math.random()*-200 - 50) + 'px');
+            box.appendChild(e);
+            setTimeout(() => e.remove(), 3000);
+        }, 300);
+    }
+
+    function showInput() {
+        document.getElementById('pillu-input').style.display = 'block';
+    }
+
+    function checkSecondPass() {
+        if(document.getElementById('pass2').value.toLowerCase() === 'pillu') {
+            // Curtain Animation
+            document.body.classList.add('curtain-open');
+            setTimeout(() => {
+                go(4);
+                confetti({
+                    particleCount: 200,
+                    spread: 100,
+                    origin: { y: 0.6 }
+                });
+            }, 1000);
+        } else {
+            alert("Wrong nickname! Hint: I call you this with love.");
+        }
+    }
+</script>
+</body>
+</html>
